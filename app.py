@@ -23,4 +23,5 @@ def dataload():
     })
 
 if __name__ == "__main__":
-    app.run(port=5002)
+    app.run(host="10.11.86.110", port=5002)
+
