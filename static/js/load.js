@@ -1,10 +1,14 @@
 $(function(){
 	$('#btnSubmit').click(function(){
         var regionName = $('#regionName').val();
+		var formData = {
+                'regionName': $('input[id=regionName]').val()
+            };
+		console.log($('form').serialize());
 		$.ajax({
 			url: '/dataload',
-			data: $('form').serialize(),
-			type: 'POST',
+			data: formData,
+			type: 'GET',
 			success: function(response){
 				console.log(response);
 				  $("#div-result").css( "visibility", "visible" );

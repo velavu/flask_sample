@@ -1,0 +1,8 @@
+{
+    "id": "myapp",
+    "cmd": "pwd",
+    "cpus": 0.2,
+    "mem": 512.0,
+    "instances": 1
+}
+

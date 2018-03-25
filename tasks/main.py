@@ -1,11 +1,6 @@
-from flask import Flask, render_template, json, request
-from datetime import datetime
 import requests
 import json
 import time
-
-app = Flask(__name__)
-
 
 def add_marathon_task(app):
     print "Adding task {} to Mesos Marathon - Started!!!".format(app)
@@ -41,34 +36,13 @@ def run(app):
     try:
         add_marathon_task(app)
         time.sleep(3)
+
     except:
         delete_marathon_task(app)
     finally:
         delete_marathon_task(app)
 
 
-@app.route('/')
-def main():
-    return render_template('index.html')
-
-@app.route('/dataload', methods=['GET'])
-def dataload():
-    region = request.args.get('regionName', 'Test')
-    print region
-    marathon_app_name = "sam-{}".format(str(region).lower())
-    run(marathon_app_name)
-    loaded_on = datetime.now()
-
-    load_status = "Completed"
-
-    return json.dumps({
-        'message': {
-            'region': region,
-            'loaded_on': str(loaded_on),
-            'load_status': load_status
-        }
-    })
-
-if __name__ == "__main__":
-    app.run(port=8082)
-
+if __name__ == '__main__':
+    app = "sam-4mra-6"
+    run(app)
