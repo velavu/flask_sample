@@ -19,9 +19,8 @@ $(function(){
 				$("#loaded_on").html(json_resp.message.loaded_on);
                 $("#div-db-result").css( "visibility", "visible" );
                 var dbResult = json_resp.message.result;
-                alert(dbResult.length);
                 var tblStr = "<table>";
-                for (var i=0; i < 1; i++){
+                for (var i=0; i < dbResult.length; i++){
                     tblStr += "<tr>";
                     tblStr += "<td>"+dbResult[i][0]+"</td>";
                     tblStr += "<td>"+dbResult[i][1]+"</td>";
