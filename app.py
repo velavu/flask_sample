@@ -77,6 +77,8 @@ def main():
 @app.route('/dataload', methods=['GET'])
 def dataload():
     try:
+        st_time = datetime.now()
+        print "{} - Started".format(st_time)
         region = request.args.get('regionName', 'Test')
         print region
         marathon_app_name = "sam-{}".format(str(region).lower())
@@ -85,7 +87,7 @@ def dataload():
         presto_result = execute(region)
         loaded_on = datetime.now()
         load_status = "Completed"
-        print "{} - {}".format(loaded_on, load_status)
+        print "{} - {} (in {} s)".format(loaded_on, load_status, (loaded_on - st_time))
 
         return json.dumps({
             'message': {

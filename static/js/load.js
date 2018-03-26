@@ -1,8 +1,22 @@
 $(function(){
 	$('#btnSubmit').click(function(){
+
+        function validate(region, layer, rec){
+            if (region == "" || layer == "" || rec == "")
+            {
+                alert("Enter valid inputs!!");
+            }
+        }
         var regionName = $('#regionName').val();
+        var layer = $('#layer').val();
+        var records = $('#records').val();
+        $("#progress-bar").css( "visibility", "visible");
+        validate(regionName, layer, records);
+
 		var formData = {
-                'regionName': $('input[id=regionName]').val()
+                'regionName': $('input[id=regionName]').val(),
+                'layer': $('input[id=layer]').val(),
+                'records': $('input[id=records]').val()
             };
 		console.log($('form').serialize());
 		$.ajax({
@@ -11,7 +25,8 @@ $(function(){
 			type: 'GET',
 			success: function(response){
 				console.log(response);
-				  $("#div-result").css( "visibility", "visible" );
+				  $("#div-result").css( "visibility", "visible");
+				  $("#progress-bar").css( "visibility", "hidden");
 
                 var json_resp = $.parseJSON(response);
 				$("#load_status").html(json_resp.message.load_status);
@@ -20,20 +35,18 @@ $(function(){
                 $("#div-db-result").css( "visibility", "visible" );
                 var dbResult = json_resp.message.result;
                 var tblStr = "<table class=\"table\" width=\"100%\">";
-                for (var i=0; i < 1; i++){
-                    tblStr += "<thead>";
-                    tblStr += "<tr>";
-                    tblStr += "<th>"+dbResult[i][0]+"</th>";
-                    tblStr += "<th>"+dbResult[i][1]+"</th>";
-                    tblStr += "<th>"+dbResult[i][2]+"</th>";
-                    tblStr += "<th>"+dbResult[i][3]+"</th>";
-                    tblStr += "<th>"+dbResult[i][4]+"</th>";
-                    tblStr += "<th>"+dbResult[i][5]+"</th>";
-                    tblStr += "</tr>";
-                    tblStr += "</thead>";
-                }
+                tblStr += "<thead>";
+                tblStr += "<tr>";
+                tblStr += "<th>"+dbResult[1][0]+"</th>";
+                tblStr += "<th>"+dbResult[1][1]+"</th>";
+                tblStr += "<th>"+dbResult[1][2]+"</th>";
+                tblStr += "<th>"+dbResult[1][3]+"</th>";
+                tblStr += "<th>"+dbResult[1][4]+"</th>";
+                tblStr += "<th>"+dbResult[1][5]+"</th>";
+                tblStr += "</tr>";
+                tblStr += "</thead>";
                 tblStr += "<tbody>";
-                for (var i=1; i < dbResult.length; i++){
+                for (var i=2; i <= dbResult.length; i++){
                     tblStr += "<tr>";
                     tblStr += "<td>"+dbResult[i][0]+"</td>";
                     tblStr += "<td>"+dbResult[i][1]+"</td>";
@@ -50,6 +63,7 @@ $(function(){
 				$("#div-db-result").html(tblStr);
 			},
 			error: function(err){
+				$("#progress-bar").css( "visibility", "hidden");
                 $("#div-result-failure").css( "visibility", "visible");
                 var json_resp = $.parseJSON(err);
 				$("#error-result").html(json_resp.message.error);
