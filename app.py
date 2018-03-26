@@ -88,8 +88,8 @@ def dataload():
         st_time = datetime.now()
         print "{} - Started".format(st_time)
         region = request.args.get('regionName', 'Test')
-        layer = request.args.get('layer', 'Test')
-        records = request.args.get('records', 'Test')
+        layer = request.args.get('layer', 'cable')
+        records = request.args.get('records', '10')
         print region, layer, records
         marathon_app_name = "sam-{}".format(str(region).lower())
         run(marathon_app_name, region)
