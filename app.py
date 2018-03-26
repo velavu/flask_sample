@@ -1,4 +1,4 @@
-from pyhive import presto  # or import hive
+from pyhive import presto
 from flask import Flask, render_template, json, request
 from datetime import datetime
 import requests
@@ -49,10 +49,10 @@ def run(app, region):
         delete_marathon_task(app)
 
 
-def execute(layer):
+def execute(region, layer, rows=10):
     try:
 
-        print "Execute - {}".format(layer)
+        print "Execute - {}".format(region)
         cursor = presto.connect(
             host=HOST_NAME,
             port=DB_PORT,
@@ -60,7 +60,15 @@ def execute(layer):
             catalog=PG_CATALOG
         ).cursor()
         print "cursor creation completed"
-        statement = "select * from {}.cable limit 5".format(DB_NAME)
+        statement = "select * from {}.{}".format(DB_NAME, layer)
+        if rows != "all" and rows != "":
+            # as the first row in csv as header .. its a hack
+            # find a decent way of doing it in presto or loader
+            statement = "{} limit {}".format(statement, (rows+1))
+
+        print "------"*10
+        print "Query: {}".format(statement)
+        print "------"*10
         cursor.execute(statement)
         print "cursor execution completed"
         my_results = cursor.fetchall()
@@ -80,11 +88,13 @@ def dataload():
         st_time = datetime.now()
         print "{} - Started".format(st_time)
         region = request.args.get('regionName', 'Test')
+        layer = request.args.get('layer', 'Test')
+        records = request.args.get('records', 'Test')
         print region
         marathon_app_name = "sam-{}".format(str(region).lower())
         run(marathon_app_name, region)
         print "Start presto execution"
-        presto_result = execute(region)
+        presto_result = execute(region, layer, records)
         loaded_on = datetime.now()
         load_status = "Completed"
         print "{} - {} (in {} s)".format(loaded_on, load_status, (loaded_on - st_time))
