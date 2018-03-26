@@ -50,18 +50,26 @@ def run(app, region):
 
 
 def execute(layer):
-    print "Execute - {}".format(layer)
-    cursor = presto.connect(
-        host=HOST_NAME,
-        port=DB_PORT,
-        protocol=DB_PROTOCOL,
-        catalog=PG_CATALOG
-    ).cursor()
-    statement = "select * from {}.cable limit 5".format(DB_NAME, layer)
-    cursor.execute(statement)
-    my_results = cursor.fetchall()
-    print "Result - {}".format(my_results)
-    return my_results
+    try:
+
+        print "Execute - {}".format(layer)
+        cursor = presto.connect(
+            host=HOST_NAME,
+            port=DB_PORT,
+            protocol=DB_PROTOCOL,
+            catalog=PG_CATALOG
+        ).cursor()
+        print "1"*10
+        statement = "select * from {}.cable limit 5".format(DB_NAME)
+        print "2"*10
+        cursor.execute(statement)
+        print "3"*10
+        my_results = cursor.fetchall()
+        print "Result - {}".format(my_results)
+        return my_results
+    except Exception as e:
+        print e.message
+
 
 @app.route('/')
 def main():
