@@ -19,8 +19,18 @@ $(function(){
 				$("#loaded_on").html(json_resp.message.loaded_on);
                 $("#div-db-result").css( "visibility", "visible" );
                 var dbResult = json_resp.message.result;
-                var tblStr = "<table>";
-                for (var i=0; i < dbResult.length; i++){
+                var tblStr = "<table style=\"border:1px solid black\" width=\"100%\">";
+                for (var i=0; i < 1; i++){
+                    tblStr += "<tr>";
+                    tblStr += "<th>"+dbResult[i][0]+"</th>";
+                    tblStr += "<th>"+dbResult[i][1]+"</th>";
+                    tblStr += "<th>"+dbResult[i][2]+"</th>";
+                    tblStr += "<th>"+dbResult[i][3]+"</th>";
+                    tblStr += "<th>"+dbResult[i][4]+"</th>";
+                    tblStr += "<th>"+dbResult[i][5]+"</th>";
+                    tblStr += "</tr>";
+                }
+                for (var i=1; i < dbResult.length; i++){
                     tblStr += "<tr>";
                     tblStr += "<td>"+dbResult[i][0]+"</td>";
                     tblStr += "<td>"+dbResult[i][1]+"</td>";
@@ -31,6 +41,8 @@ $(function(){
                     tblStr += "</tr>";
                 }
                 tblStr += "</table>";
+                summary = "<span> Completed </span>";
+                resultData = tblStr + summary;
 				$("#div-db-result").html(tblStr);
 			},
 			error: function(err){
