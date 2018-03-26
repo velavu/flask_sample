@@ -64,7 +64,7 @@ def execute(region, layer, rows=10):
         if rows != "all" and rows != "":
             # as the first row in csv as header .. its a hack
             # find a decent way of doing it in presto or loader
-            statement = "{} limit {}".format(statement, (rows+1))
+            statement = "{} limit {}".format(statement, (int(rows)+1))
 
         print "------"*10
         print "Query: {}".format(statement)
@@ -90,7 +90,7 @@ def dataload():
         region = request.args.get('regionName', 'Test')
         layer = request.args.get('layer', 'Test')
         records = request.args.get('records', 'Test')
-        print region
+        print region, layer, records
         marathon_app_name = "sam-{}".format(str(region).lower())
         run(marathon_app_name, region)
         print "Start presto execution"
