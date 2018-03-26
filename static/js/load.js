@@ -13,14 +13,15 @@ $(function(){
         $("#progress-bar").css( "visibility", "visible");
         validate(regionName, layer, records);
         alert(regionName);
+        alert($('input[id=regionName]').val());
         alert(layer);
         alert($('input[id=layer]').val());
         alert(records);
         alert($('input[id=records]').val());
 		var formData = {
                 'regionName': $('input[id=regionName]').val(),
-                'layer': $('input[id=layer]').val(),
-                'records': $('input[id=records]').val()
+                'layer': $('select[id=layer]').val(),
+                'records': $('select[id=records]').val()
             };
 		console.log($('form').serialize());
 		$.ajax({
