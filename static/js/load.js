@@ -19,10 +19,11 @@ $(function(){
         alert(records);
         alert($('input[id=records]').val());
 		var formData = {
-                'regionName': $('input[id=regionName]').val(),
-                'layer': $('select[id=layer]').val(),
-                'records': $('select[id=records]').val()
+                'regionName': regionName,
+                'layer': layer,
+                'records': records
             };
+        console.log(formData);
 		console.log($('form').serialize());
 		$.ajax({
 			url: '/dataload',
