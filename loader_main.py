@@ -6,7 +6,7 @@ import zipfile
 PROJECT_PATH = "/opt/flask_sample"
 PROJECT_DATA_DIR = os.path.join(PROJECT_PATH, "flask_data")
 BUCKET_NAME = "presto-demo-bucket"
-HOST_NAME = ""
+HOST_NAME = "10.11.85.232"
 PG_CATALOG = "postgresql"
 LAYER_LIST = ["cable", "equipment", "boundary"]
 DB_NAME = "presto_demo_db"

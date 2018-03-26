@@ -50,7 +50,7 @@ def run(app, region):
 
 
 def execute(layer):
-
+    print "Execute - {}".format(layer)
     cursor = presto.connect(
         host=HOST_NAME,
         port=DB_PORT,
@@ -60,6 +60,7 @@ def execute(layer):
     statement = "select * from {}.{} limit 5".format(DB_NAME, layer)
     cursor.execute(statement)
     my_results = cursor.fetchall()
+    print "Result - {}".format(my_results)
     return my_results
 
 @app.route('/')
@@ -73,10 +74,13 @@ def dataload():
         print region
         marathon_app_name = "sam-{}".format(str(region).lower())
         run(marathon_app_name, region)
-        loaded_on = datetime.now()
-
-        load_status = "Completed"
+        print "Start presto execution"
         presto_result = execute(region)
+        loaded_on = datetime.now()
+        load_status = "Completed"
+        print "-----"*10
+        print "{} - {}".format(loaded_on, load_status)
+
         return json.dumps({
             'message': {
                 'region': region,
