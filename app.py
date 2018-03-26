@@ -57,7 +57,7 @@ def execute(layer):
         protocol=DB_PROTOCOL,
         catalog=PG_CATALOG
     ).cursor()
-    statement = "select * from {}.{} limit 5".format(DB_NAME, layer)
+    statement = "select * from {}.cable limit 5".format(DB_NAME, layer)
     cursor.execute(statement)
     my_results = cursor.fetchall()
     print "Result - {}".format(my_results)

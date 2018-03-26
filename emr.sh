@@ -20,7 +20,7 @@ DROP DATABASE IF EXISTS presto_demo_db cascade;
 
 CREATE DATABASE presto_demo_db;
 
-USE presto;
+USE presto_demo_db;
 
 CREATE EXTERNAL TABLE presto_demo_db.cable (id string, technology string, hierarchy string, specification string, start_equipment_id string, end_equipment_id string) COMMENT 'prestodemo_cable' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE location 's3://presto-demo-bucket/output/cable';
 
