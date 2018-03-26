@@ -17,6 +17,13 @@ $(function(){
 				$("#load_status").html(json_resp.message.load_status);
 				$("#region").html(regionName);
 				$("#loaded_on").html(json_resp.message.loaded_on);
+                $("#div-db-result").css( "visibility", "visible" );
+                var dbResult = json_resp.message.result;
+                alert(dbResult.length);
+                for (var i=0; i < dbResult.length; i++){
+                    alert(dbResult[i]);
+                }
+
 			},
 			error: function(err){
                 $("#div-result-failure").css( "visibility", "visible" );
