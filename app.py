@@ -1,17 +1,19 @@
+from pyhive import presto  # or import hive
 from flask import Flask, render_template, json, request
 from datetime import datetime
 import requests
 import json
 import time
+from loader_main import HOST_NAME, PG_CATALOG, DB_NAME, DB_PORT, DB_PROTOCOL
 
 app = Flask(__name__)
 
 
-def add_marathon_task(app):
+def add_marathon_task(app, region):
     print "Adding task {} to Mesos Marathon - Started!!!".format(app)
     data = {
         'id': '{}'.format(app),
-        'cmd': 'pwd',
+        'cmd': 'python loader_main.py {}'.format(region),
         'cpus': 0.2,
         'mem': 512,
         'instances': 1
@@ -37,15 +39,28 @@ def delete_marathon_task(app_id):
     )
     print "Deleted app {}".format(app_id)
 
-def run(app):
+def run(app, region):
     try:
-        add_marathon_task(app)
+        add_marathon_task(app, region)
         time.sleep(3)
     except:
         delete_marathon_task(app)
     finally:
         delete_marathon_task(app)
 
+
+def execute(layer):
+
+    cursor = presto.connect(
+        host=HOST_NAME,
+        port=DB_PORT,
+        protocol=DB_PROTOCOL,
+        catalog=PG_CATALOG
+    ).cursor()
+    statement = "select * from {}.{} limit 5".format(DB_NAME, layer)
+    cursor.execute(statement)
+    my_results = cursor.fetchall()
+    return my_results
 
 @app.route('/')
 def main():
@@ -56,16 +71,17 @@ def dataload():
     region = request.args.get('regionName', 'Test')
     print region
     marathon_app_name = "sam-{}".format(str(region).lower())
-    run(marathon_app_name)
+    run(marathon_app_name, region)
     loaded_on = datetime.now()
 
     load_status = "Completed"
-
+    presto_result = execute(region)
     return json.dumps({
         'message': {
             'region': region,
             'loaded_on': str(loaded_on),
-            'load_status': load_status
+            'load_status': load_status,
+            'result': presto_result
         }
     })
 
