@@ -19,8 +19,9 @@ $(function(){
 				$("#loaded_on").html(json_resp.message.loaded_on);
                 $("#div-db-result").css( "visibility", "visible" );
                 var dbResult = json_resp.message.result;
-                var tblStr = "<table style=\"border:1px solid black\" width=\"100%\">";
+                var tblStr = "<table class=\"table\" width=\"100%\">";
                 for (var i=0; i < 1; i++){
+                    tblStr += "<thead>";
                     tblStr += "<tr>";
                     tblStr += "<th>"+dbResult[i][0]+"</th>";
                     tblStr += "<th>"+dbResult[i][1]+"</th>";
@@ -29,7 +30,9 @@ $(function(){
                     tblStr += "<th>"+dbResult[i][4]+"</th>";
                     tblStr += "<th>"+dbResult[i][5]+"</th>";
                     tblStr += "</tr>";
+                    tblStr += "</thead>";
                 }
+                tblStr += "<tbody>";
                 for (var i=1; i < dbResult.length; i++){
                     tblStr += "<tr>";
                     tblStr += "<td>"+dbResult[i][0]+"</td>";
@@ -40,6 +43,7 @@ $(function(){
                     tblStr += "<td>"+dbResult[i][5]+"</td>";
                     tblStr += "</tr>";
                 }
+                tblStr += "</tbody>";
                 tblStr += "</table>";
                 summary = "<span> Completed </span>";
                 resultData = tblStr + summary;

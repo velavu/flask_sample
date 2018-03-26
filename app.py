@@ -59,13 +59,12 @@ def execute(layer):
             protocol=DB_PROTOCOL,
             catalog=PG_CATALOG
         ).cursor()
-        print "1"*10
+        print "cursor creation completed"
         statement = "select * from {}.cable limit 5".format(DB_NAME)
-        print "2"*10
         cursor.execute(statement)
-        print "3"*10
+        print "cursor execution completed"
         my_results = cursor.fetchall()
-        print "Result - {}".format(my_results)
+        print "Result - {} rows returned".format(len(my_results))
         return my_results
     except Exception as e:
         print e.message
@@ -86,7 +85,6 @@ def dataload():
         presto_result = execute(region)
         loaded_on = datetime.now()
         load_status = "Completed"
-        print "-----"*10
         print "{} - {}".format(loaded_on, load_status)
 
         return json.dumps({
@@ -98,9 +96,15 @@ def dataload():
             }
         })
     except Exception as e:
+        region = request.args.get('regionName', 'Test')
+        loaded_on = datetime.now()
+        load_status = "Failed"
         return json.dumps({
             'message': {
-                'error': e.message
+                'region': region,
+                'error': e.message,
+                'loaded_on': str(loaded_on),
+                'load_status': load_status,
             }
         })
 if __name__ == "__main__":

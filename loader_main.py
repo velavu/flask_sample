@@ -6,7 +6,7 @@ import zipfile
 PROJECT_PATH = "/opt/flask_sample"
 PROJECT_DATA_DIR = os.path.join(PROJECT_PATH, "flask_data")
 BUCKET_NAME = "presto-demo-bucket"
-HOST_NAME = "10.11.85.232"
+HOST_NAME = "10.11.85.116"
 PG_CATALOG = "hive"
 LAYER_LIST = ["cable", "equipment", "boundary"]
 DB_NAME = "presto_demo_db"
@@ -24,23 +24,29 @@ def validate_input():
     return sys.argv[1]
 
 def download_zip_from_s3(region):
+    print "Download zip from S3 Started", region
     bucket_file_name = "input/{}.zip".format(region)
     dest_file_name = os.path.join(PROJECT_DATA_DIR, "{}.zip".format(region))
     response = s3_rsc.Bucket(BUCKET_NAME).download_file(bucket_file_name, dest_file_name)
-    print response
+    print response, "Download Response"
+    print "Download zip from S3 Completed"
 
 def upload_to_s3(region, layer):
+    print "Upload to S3 Started", region, layer
     csv_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.csv".format(layer))
-    s3_client.upload_file(csv_file_path, BUCKET_NAME, "output/{}/{}.csv".format(layer, layer))
+    upload_response = s3_client.upload_file(csv_file_path, BUCKET_NAME, "output/{}/{}.csv".format(layer, layer))
+    print upload_response
+    print "UPload to S3 Completed"
 
 def extract_and_load(region):
-
+    print "Extract and Load Started", region
     dest_file_name = os.path.join(PROJECT_DATA_DIR, "{}.zip".format(region))
     zip_file = zipfile.ZipFile(dest_file_name)
     with zip_file as load_zip_file:
         if not load_zip_file.namelist():
             raise
         load_zip_file.extractall(os.path.join(PROJECT_DATA_DIR, region))
+    print "Extract Completed", region
 
     for l in LAYER_LIST:
         tab_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.tab".format(l))
@@ -49,6 +55,7 @@ def extract_and_load(region):
         print command
         os.system(command)
         upload_to_s3(region, l)
+    print "Extract and Load Completed", region
 
 
 def run():
