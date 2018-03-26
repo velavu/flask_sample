@@ -68,23 +68,29 @@ def main():
 
 @app.route('/dataload', methods=['GET'])
 def dataload():
-    region = request.args.get('regionName', 'Test')
-    print region
-    marathon_app_name = "sam-{}".format(str(region).lower())
-    run(marathon_app_name, region)
-    loaded_on = datetime.now()
+    try:
+        region = request.args.get('regionName', 'Test')
+        print region
+        marathon_app_name = "sam-{}".format(str(region).lower())
+        run(marathon_app_name, region)
+        loaded_on = datetime.now()
 
-    load_status = "Completed"
-    presto_result = execute(region)
-    return json.dumps({
-        'message': {
-            'region': region,
-            'loaded_on': str(loaded_on),
-            'load_status': load_status,
-            'result': presto_result
-        }
-    })
-
+        load_status = "Completed"
+        presto_result = execute(region)
+        return json.dumps({
+            'message': {
+                'region': region,
+                'loaded_on': str(loaded_on),
+                'load_status': load_status,
+                'result': presto_result
+            }
+        })
+    except Exception as  e:
+        return json.dumps({
+            'message': {
+                'error': e.message
+            }
+        })
 if __name__ == "__main__":
     app.run(host="10.11.86.110", port=8082)
 
