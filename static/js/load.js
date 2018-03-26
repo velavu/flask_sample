@@ -20,13 +20,22 @@ $(function(){
                 $("#div-db-result").css( "visibility", "visible" );
                 var dbResult = json_resp.message.result;
                 alert(dbResult.length);
-                for (var i=0; i < dbResult.length; i++){
-                    alert(dbResult[i]);
+                var tblStr = "<table>";
+                for (var i=0; i < 1; i++){
+                    tblStr += "<tr>";
+                    tblStr += "<td>"+dbResult[i][0]+"</td>";
+                    tblStr += "<td>"+dbResult[i][1]+"</td>";
+                    tblStr += "<td>"+dbResult[i][2]+"</td>";
+                    tblStr += "<td>"+dbResult[i][3]+"</td>";
+                    tblStr += "<td>"+dbResult[i][4]+"</td>";
+                    tblStr += "<td>"+dbResult[i][5]+"</td>";
+                    tblStr += "</tr>";
                 }
-
+                tblStr += "</table>";
+				$("#div-db-result").html(tblStr);
 			},
 			error: function(err){
-                $("#div-result-failure").css( "visibility", "visible" );
+                $("#div-result-failure").css( "visibility", "visible");
                 var json_resp = $.parseJSON(err);
 				$("#error-result").html(json_resp.message.error);
 				console.log(error);
