@@ -1,11 +1,10 @@
-from pyhive import presto  # or import hive
 import os
 import sys
 import boto3
-import botocore
 import zipfile
 
 PROJECT_PATH = "/opt/flask_sample"
+PROJECT_DATA_DIR = os.path.join(PROJECT_PATH, "flask_data")
 BUCKET_NAME = "presto-demo-bucket"
 HOST_NAME = ""
 PG_CATALOG = "postgresql"
@@ -14,7 +13,9 @@ DB_NAME = "presto_demo_db"
 DB_PORT = "8889"
 DB_PROTOCOL = "http"
 
-s3 = boto3.client('s3')
+s3_client = boto3.client('s3')
+s3_rsc = s3 = boto3.resource('s3')
+
 
 def validate_input():
     if len(sys.argv) != 2:
@@ -24,23 +25,30 @@ def validate_input():
 
 def download_zip_from_s3(region):
     bucket_file_name = "input/{}.zip".format(region)
-    dest_file_name = "{}.zip".format(region)
-    response = s3.Bucket(BUCKET_NAME).download_file(bucket_file_name, dest_file_name)
+    dest_file_name = os.path.join(PROJECT_DATA_DIR, "{}.zip".format(region))
+    response = s3_rsc.Bucket(BUCKET_NAME).download_file(bucket_file_name, dest_file_name)
     print response
 
-def upload_to_s3(layer):
-    s3.upload_file("{}.csv".format(layer), BUCKET_NAME, "output/{}.csv".format(layer))
+def upload_to_s3(region, layer):
+    csv_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.csv".format(layer))
+    s3_client.upload_file(csv_file_path, BUCKET_NAME, "output/{}/{}.csv".format(layer, layer))
 
 def extract_and_load(region):
-    zip_file = zipfile.ZipFile("{}.zip".format(region))
+
+    dest_file_name = os.path.join(PROJECT_DATA_DIR, "{}.zip".format(region))
+    zip_file = zipfile.ZipFile(dest_file_name)
     with zip_file as load_zip_file:
         if not load_zip_file.namelist():
             raise
-        load_zip_file.extractall(os.path.join(PROJECT_PATH, region))
+        load_zip_file.extractall(os.path.join(PROJECT_DATA_DIR, region))
+
     for l in LAYER_LIST:
-        command = "ogr2ogr -f CSV {} {}".format(type, "{}.csv".format(l), "{}.tab".format(l))
+        tab_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.tab".format(l))
+        csv_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.csv".format(l))
+        command = "ogr2ogr -f CSV {} {}".format(csv_file_path, tab_file_path)
+        print command
         os.system(command)
-        upload_to_s3(l)
+        upload_to_s3(region, l)
 
 
 def run():

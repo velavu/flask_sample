@@ -85,7 +85,7 @@ def dataload():
                 'result': presto_result
             }
         })
-    except Exception as  e:
+    except Exception as e:
         return json.dumps({
             'message': {
                 'error': e.message
