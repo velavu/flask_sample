@@ -52,7 +52,7 @@ $(function(){
                 tblStr += "</tr>";
                 tblStr += "</thead>";
                 tblStr += "<tbody>";
-                for (var i=2; i <= dbResult.length; i++){
+                for (var i=2; i < dbResult.length; i++){
                     tblStr += "<tr>";
                     tblStr += "<td>"+dbResult[i][0]+"</td>";
                     tblStr += "<td>"+dbResult[i][1]+"</td>";

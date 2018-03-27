@@ -2,6 +2,7 @@ import os
 import sys
 import boto3
 import zipfile
+import shutil
 
 PROJECT_PATH = "/opt/flask_sample"
 PROJECT_DATA_DIR = os.path.join(PROJECT_PATH, "flask_data")
@@ -24,6 +25,11 @@ def validate_input():
     return sys.argv[1]
 
 def download_zip_from_s3(region):
+
+    if not os.path.exists(PROJECT_DATA_DIR):
+        os.makedirs(PROJECT_DATA_DIR)
+    if os.path.exists(os.path.join(PROJECT_DATA_DIR, region)):
+        shutil.rmtree(os.path.join(PROJECT_DATA_DIR, region))
     print "Download zip from S3 Started", region
     bucket_file_name = "input/{}.zip".format(region)
     dest_file_name = os.path.join(PROJECT_DATA_DIR, "{}.zip".format(region))
