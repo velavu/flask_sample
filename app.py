@@ -13,7 +13,8 @@ def add_marathon_task(app, region):
     print "Adding task {} to Mesos Marathon - Started!!!".format(app)
     data = {
         'id': '{}'.format(app),
-        'cmd': 'python loader_main.py {}'.format(region),
+        'cmd': '/usr/bin/python /opt/flask_sample/loader_main.py {} > /opt/flask_sample/flask.log'.format(region),
+        # 'cmd': 'python loader_main.py {}'.format(region),
         'cpus': 0.2,
         'mem': 512,
         'instances': 1
@@ -42,7 +43,7 @@ def delete_marathon_task(app_id):
 def run(app, region):
     try:
         add_marathon_task(app, region)
-        time.sleep(3)
+        time.sleep(30)
     except:
         delete_marathon_task(app)
     finally:

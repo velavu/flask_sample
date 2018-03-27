@@ -12,12 +12,6 @@ $(function(){
         var records = $('#records').val();
         $("#progress-bar").css( "visibility", "visible");
         validate(regionName, layer, records);
-        alert(regionName);
-        alert($('input[id=regionName]').val());
-        alert(layer);
-        alert($('input[id=layer]').val());
-        alert(records);
-        alert($('input[id=records]').val());
 		var formData = {
                 'regionName': regionName,
                 'layer': layer,
