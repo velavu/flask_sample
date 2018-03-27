@@ -28,8 +28,21 @@ yum install gdal
 cd /opt/
 git clone https://github.com/velavu/flask_sample.git
 cd /opt/flask_sample
-pip install requirements.txt
 pip install -r requirements.txt
 #ensure these two doesnt throw any import error
 #python loader_main.py 6DNG-01
 #python app.py
+
+
+#Order #2
+#the above order doesnt seems to be working
+yum -y update
+yum -y install epel-release
+yum -y install gdal
+yum -y groupinstall "Development tools"
+yum -y install git
+cd /opt/
+git clone https://github.com/velavu/flask_sample.git
+cd /opt/flask_sample
+yum -y install python-pip
+pip install -r requirements.txt
