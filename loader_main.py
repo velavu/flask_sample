@@ -9,7 +9,12 @@ PROJECT_DATA_DIR = os.path.join(PROJECT_PATH, "flask_data")
 BUCKET_NAME = "presto-demo-bucket"
 HOST_NAME = "10.11.85.116"
 PG_CATALOG = "hive"
-LAYER_LIST = ["cable", "equipment", "boundary"]
+# LAYER_LIST = ["cable", "equipment", "boundary"]
+LAYER_PARAMS = {
+    "cable": "id, technology, hierarchy, specification, start_equipment_id, end_equipment_id",
+    "equipment": "id, technology, hierarchy, specification, structure_id",
+    "boundary": "id, owner, type"
+}
 DB_NAME = "presto_demo_db"
 DB_PORT = "8889"
 DB_PROTOCOL = "http"
@@ -54,10 +59,10 @@ def extract_and_load(region):
         load_zip_file.extractall(os.path.join(PROJECT_DATA_DIR, region))
     print "Extract Completed", region
 
-    for l in LAYER_LIST:
+    for l in LAYER_PARAMS:
         tab_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.tab".format(l))
         csv_file_path = os.path.join(PROJECT_DATA_DIR, region, region, "{}.csv".format(l))
-        command = "ogr2ogr -f CSV {} {}".format(csv_file_path, tab_file_path)
+        command = 'ogr2ogr -f "CSV" {} {} -select "{}"'.format(csv_file_path, tab_file_path, LAYER_PARAMS[l])
         print command
         os.system(command)
         upload_to_s3(region, l)
